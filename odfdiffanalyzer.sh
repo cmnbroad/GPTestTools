@@ -114,19 +114,19 @@ BEGIN {
 {
     # Skip the header lines
     if (NR > Skiplines) {
+        rc = 0
         for (i=1; i <= NF/2; i++) {
-            rc = 0
             tfn = i+(NF/2)
             if ($i != $tfn) {
                 if (rc == 0) {
                     printf("%s: ", NR)
                 }
-                printf("(%s : %s) ", $i, $tfn)
+                printf("Diff: (%s : %s) ", $i, $tfn)
                 rc++
             }
-            if (rc != 0)
-                printf("\n");
         }
+        if (rc != 0)
+            printf("\n");
     }
 }'
                                                                                 
