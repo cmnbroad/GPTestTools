@@ -55,6 +55,24 @@ awk '
 BEGIN {
     FS="[\t]"
     IGNORECASE=1
+    tolerance=0.0000000001
+    toleranceCount=0;
+}
+
+function abs(x) {
+    return ((x < 0.0) ? -x : x)
+}
+
+# Keep track of and display the n umber of values that exceed the allowed tolerance
+#
+END {
+    if (toleranceCount > 0) {
+        printf("%d column values exceed tolerance of %g\n", toleranceCount, tolerance)
+    }
+    else
+    {
+        printf("All values within tolerance of %g\n", tolerance)
+    }
 }
 
 # Check and compare ODF version numbers
@@ -121,7 +139,12 @@ BEGIN {
                 if (rc == 0) {
                     printf("%s: ", NR)
                 }
-                printf("Diff: (%s : %s) ", $i, $tfn)
+
+                toleranceDiff = abs($i-$tfn)
+                printf("Diff: (%s : %s : %.16g) ", $i, $tfn, toleranceDiff)
+                if (toleranceDiff > tolerance) {
+                    toleranceCount++
+                }
                 rc++
             }
         }
